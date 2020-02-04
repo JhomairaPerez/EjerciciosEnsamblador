@@ -21,7 +21,7 @@ section .data
     mensaje db "Ingrese el segundo numero",10
     lenn equ $ - mensaje
 
-    mensajeopcion db "Elija una opcion y ubiquelo"
+    mensajeopcion db 10,"Menu" ,10 , "1=> Sumar", 10 , "2=> Restar",10 , "3=> Multiplicar" ,10, "4=> Dividir" ,10, "5=> Salir", 10, "Elija una opcion:"
     tamanoopcion equ $ - mensajeopcion
 
     mensajee db 10,"**Operacion de suma de 8 bits**"
@@ -53,9 +53,10 @@ section .data
     new_line db 10, " "
 
 section .bss
-    opcion resb 1
+    
     n1 resb 1
-    n2 resb 1  
+    n2 resb 1 
+    opcion resb 1 
     suma resb 1
     resta resb 1
     resul resb 1  
@@ -67,17 +68,44 @@ section .text
 
 _start:            
            
-; ********************************
-    leer opcion, 2
 
 ;************numero 1*************
     escribir mens, len
     leer n1, 2
+    mov al, [n1]
+    sub al, '0'
+
 ;************numero 2*************
     escribir mensaje, lenn
     leer n2, 2
+    mov ah, [n2]
+    sub ah, '0'
 
-     jmp dividir
+; ********************************
+menu:
+            escribir mensajeopcion, tamanoopcion
+
+            leer opcion, 2
+            mov bl, [opcion]
+            sub bl, '0'
+
+            cmp bl, 1
+            je sumar
+
+            cmp bl, 2
+            je restar
+            
+            cmp bl, 3
+            je multiplicar
+
+            cmp bl, 4
+            je dividir
+
+            cmp bl, 5
+            je salir
+            
+            
+            ;jmp dividir
 ;***********proceso Suma *************
 sumar: 
             mov eax,[n1]
@@ -94,7 +122,7 @@ sumar:
             escribir mensajeee, taman       
             escribir suma, 1
 
-            jmp multiplicar
+            jmp menu
 
 ;***********proceso resta********************
 restar:    
@@ -112,7 +140,7 @@ restar:
             escribir mensajerestaa, tamanioresta      
             escribir resta, 1
 
-            jmp salir
+            jmp menu
 
 ;***********proceso Multiplicacion **************    
 multiplicar:
@@ -129,7 +157,7 @@ multiplicar:
             escribir mensaje01, tamanio2       
             escribir resul, 1
 
-            jmp restar
+            jmp menu
 
 ;***********proceso Division ***************    
 dividir:
@@ -152,7 +180,7 @@ dividir:
             escribir mensaje3, len3  
             escribir residuo, 1
 
-            jmp sumar
+            jmp menu
 
 ;************final************************
 salir:
